@@ -12,9 +12,12 @@ const messageTemplate = document.querySelector('#message-template').innerHTML
 
 socket.on('broadcast-message', (msg) => {
     const html = Mustache.render(messageTemplate, {
-        message: msg
+        message: msg.text,
+        createdAt: moment(msg.createdAt).format('hh:mm a')
     })
-    $messages.insertAdjacentHTML('beforeend', html)
+
+    //Checks for empty strings or strings with only whitespaces
+    if (!/^\s*$/.test(msg)) $messages.insertAdjacentHTML('beforeend', html)
 })
 
 $messageForm.addEventListener('submit', (e) => {
