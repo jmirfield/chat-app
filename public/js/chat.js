@@ -10,14 +10,17 @@ const $messages = document.querySelector('#messages')
 //Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 
+//Options
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+
 socket.on('broadcast-message', (msg) => {
     const html = Mustache.render(messageTemplate, {
         message: msg.text,
         createdAt: moment(msg.createdAt).format('hh:mm a')
     })
-
     //Checks for empty strings or strings with only whitespaces
-    if (!/^\s*$/.test(msg)) $messages.insertAdjacentHTML('beforeend', html)
+    if (!/^\s*$/.test(msg.text)) $messages.insertAdjacentHTML('beforeend', html)
+    $messages.scrollTop = $messages.scrollHeight
 })
 
 $messageForm.addEventListener('submit', (e) => {
@@ -31,20 +34,19 @@ $messageForm.addEventListener('submit', (e) => {
     })
 })
 
-const geoLocation = document.querySelector('#send-location').addEventListener('click', (e) => {
+$locationButton.addEventListener('click', (e) => {
     if (!navigator.geolocation)return alert('Geolocation is not suppported by your browser')
     $locationButton.setAttribute('disabled', 'disabled')
     navigator.geolocation.getCurrentPosition((position) => {
-        socket.emit('send-geo', {
+        socket.emit('send-location', {
             lat: position.coords.latitude, 
             long: position.coords.longitude
         }, (err) => {
-            if(err){
-                $locationButton.removeAttribute('disabled')
-                return alert(err)
-            }
             $locationButton.removeAttribute('disabled')
+            if(err)return alert(err)
         })
     })
 
 })
+
+socket.emit('join-room', { username, room })
