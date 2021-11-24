@@ -13,7 +13,10 @@ const messageTemplate = document.querySelector('#message-template').innerHTML
 //Options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9518556 (Added login page and starting to create logic for users)
 socket.on('broadcast-message', (msg) => {
     console.log(msg)
     const html = Mustache.render(messageTemplate, {
