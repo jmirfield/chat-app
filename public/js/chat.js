@@ -46,7 +46,6 @@ $locationButton.addEventListener('click', (e) => {
     if (!navigator.geolocation)return alert('Geolocation is not suppported by your browser')
     $locationButton.setAttribute('disabled', 'disabled')
     navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position)
         socket.emit('send-location', {
             lat: position.coords.latitude, 
             long: position.coords.longitude,
