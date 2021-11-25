@@ -17,8 +17,7 @@ socket.on('broadcast-message', (msg) => {
     console.log(msg)
     const html = Mustache.render(messageTemplate, {
         message: msg.text,
-        createdAt: moment(msg.createdAt).format('hh:mm a'),
-        user: msg.username
+        createdAt: moment(msg.createdAt).format('hh:mm a')
     })
     //Checks for empty strings or strings with only whitespaces
     if (!/^\s*$/.test(msg.text)) $messages.insertAdjacentHTML('beforeend', html)
@@ -28,12 +27,7 @@ socket.on('broadcast-message', (msg) => {
 $messageForm.addEventListener('submit', (e) => {
     e.preventDefault()
     $messageFormButton.setAttribute('disabled', 'disabled')
-    const message = {
-        value: e.target.elements.message.value,
-        username,
-        room
-    }
-    console.log(message)
+    const message = e.target.elements.message.value
     socket.emit('send-message', message, () => {
         $messageFormButton.removeAttribute('disabled')
         $messageFormInput.value = ''
@@ -47,9 +41,7 @@ $locationButton.addEventListener('click', (e) => {
     navigator.geolocation.getCurrentPosition((position) => {
         socket.emit('send-location', {
             lat: position.coords.latitude, 
-            long: position.coords.longitude,
-            username,
-            room
+            long: position.coords.longitude
         }, (err) => {
             $locationButton.removeAttribute('disabled')
             if(err)return alert(err)
