@@ -3,13 +3,8 @@ const users = []
 // addUser, removeUser, getUser, getUsersInRoom
 
 const addUser = ({id, username, room}) => {
-<<<<<<< HEAD
-    username = username.trim()
-    room = room.trim()
-=======
     username = username.trim().toLowerCase()
     room = room.trim().toLowerCase()
->>>>>>> 9518556 (Added login page and starting to create logic for users)
 
     if(!username || !room) {
         return {
@@ -38,10 +33,5 @@ const removeUser = (id) => {
 
 module.exports = {
     addUser,
-<<<<<<< HEAD
-    removeUser,
-    users
-=======
     removeUser
->>>>>>> 9518556 (Added login page and starting to create logic for users)
 }
