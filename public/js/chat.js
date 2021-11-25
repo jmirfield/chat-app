@@ -47,7 +47,9 @@ $locationButton.addEventListener('click', (e) => {
     navigator.geolocation.getCurrentPosition((position) => {
         socket.emit('send-location', {
             lat: position.coords.latitude, 
-            long: position.coords.longitude
+            long: position.coords.longitude,
+            username,
+            room
         }, (err) => {
             $locationButton.removeAttribute('disabled')
             if(err)return alert(err)
