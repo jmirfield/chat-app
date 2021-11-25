@@ -33,5 +33,6 @@ const removeUser = (id) => {
 
 module.exports = {
     addUser,
-    removeUser
+    removeUser,
+    users
 }

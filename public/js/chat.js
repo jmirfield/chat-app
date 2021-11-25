@@ -13,10 +13,13 @@ const messageTemplate = document.querySelector('#message-template').innerHTML
 //Options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
 
+
 socket.on('broadcast-message', (msg) => {
+    console.log(msg)
     const html = Mustache.render(messageTemplate, {
         message: msg.text,
-        createdAt: moment(msg.createdAt).format('hh:mm a')
+        createdAt: moment(msg.createdAt).format('hh:mm a'),
+        user: msg.username
     })
     //Checks for empty strings or strings with only whitespaces
     if (!/^\s*$/.test(msg.text)) $messages.insertAdjacentHTML('beforeend', html)
@@ -26,7 +29,11 @@ socket.on('broadcast-message', (msg) => {
 $messageForm.addEventListener('submit', (e) => {
     e.preventDefault()
     $messageFormButton.setAttribute('disabled', 'disabled')
-    const message = e.target.elements.message.value
+    const message = {
+        value: e.target.elements.message.value,
+        username,
+        room
+    }
     socket.emit('send-message', message, () => {
         $messageFormButton.removeAttribute('disabled')
         $messageFormInput.value = ''

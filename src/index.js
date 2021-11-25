@@ -3,6 +3,7 @@ const app = require('./app.js')
 const socketio = require('socket.io')
 const { generateMessage } = require('./utils/messages.js')
 const { getLocation } = require('./utils/geolocation.js')
+const { addUser, removeUser, users } = require('./utils/users.js')
 
 const server = http.createServer(app)
 const io = socketio(server)
@@ -12,7 +13,7 @@ io.on('connection', (socket) => {
     //socket.broadcast.emit('broadcast-message', generateMessage('A new user has joined.'))
 
     socket.on('send-message', (msg, callback) => {
-        io.to('test').emit('broadcast-message', generateMessage(msg))
+        io.to(msg.room).emit('broadcast-message', generateMessage(msg))
         callback()
     })
 
@@ -30,6 +31,7 @@ io.on('connection', (socket) => {
 
     socket.on('join-room', ({ username, room }) => {
         socket.join(room)
+        addUser({id: 1, username, room})
         socket.broadcast.to(room).emit('broadcast-message', generateMessage(`${username} has joined.`))
     })
 

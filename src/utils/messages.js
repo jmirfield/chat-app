@@ -1,7 +1,8 @@
 const generateMessage = (msg) => {
     return {
-        text: msg,
-        createdAt: new Date().getTime()
+        text: msg.value,
+        createdAt: new Date().getTime(),
+        username: msg.username
     }
 }
 
