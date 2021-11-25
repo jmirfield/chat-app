@@ -13,7 +13,8 @@ io.on('connection', (socket) => {
     //socket.broadcast.emit('broadcast-message', generateMessage('A new user has joined.'))
 
     socket.on('send-message', (msg, callback) => {
-        io.to(msg.room).emit('broadcast-message', generateMessage(msg.value), msg.username)
+        console.log(msg)
+        io.to(msg.room).emit('broadcast-message', generateMessage(msg.value, msg.username))
         callback()
     })
 
@@ -24,7 +25,7 @@ io.on('connection', (socket) => {
     socket.on('send-location', (msg, callback) => {
         getLocation(msg.lat, msg.long, (err, res) => {
             if(err)return callback(err)
-            io.to(msg.room).emit('broadcast-message', generateMessage(`Location: ${res.city}, ${res.state}`))
+            io.to(msg.room).emit('broadcast-message', generateMessage(`Location: ${res.city}, ${res.state}`, msg.username))
             callback()
         })
     })
