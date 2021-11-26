@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
         if(error) return callback(error)
         socket.join(user.room)
         //console.log(getUsersInRoom(room))
-        socket.broadcast.to(room).emit('broadcast-message', generateMessage('BROADCAST',`${username} has joined.`))
+        socket.broadcast.to(user.room).emit('broadcast-message', generateMessage('BROADCAST',`${username} has joined.`))
     })
 
 })
