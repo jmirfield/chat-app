@@ -1,36 +1,45 @@
 const http = require('http')
 const app = require('./app.js')
 const socketio = require('socket.io')
-const { generateMessage } = require('./utils/messages.js')
+const { generateMessage, generateLocationMessage } = require('./utils/messages.js')
 const { getLocation } = require('./utils/geolocation.js')
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users.js')
 
 const server = http.createServer(app)
 const io = socketio(server)
 const port = process.env.PORT || 3000
 
+
+
 io.on('connection', (socket) => {
     //socket.broadcast.emit('broadcast-message', generateMessage('A new user has joined.'))
 
     socket.on('send-message', (msg, callback) => {
-        io.to('test').emit('broadcast-message', generateMessage(msg))
+        const user = getUser(socket.id)
+        io.to(user.room).emit('broadcast-message', generateMessage(user.username, msg))
         callback()
     })
 
     socket.on('disconnect', () => {
-        io.to('test').emit('broadcast-message', generateMessage('User has left.'))
+        const user = removeUser(socket.id)
+        if(user)io.to(user.room).emit('broadcast-message', generateMessage('BROADCAST', `${user.username} has left the chat.`))
     })
 
     socket.on('send-location', (position, callback) => {
-        getLocation(position.lat, osition.long, (err, res) => {
+        const user = getUser(socket.id)
+        getLocation(position.lat, position.long, (err, res) => {
             if(err)return callback(err)
-            io.to('test').emit('broadcast-message', generateMessage(`Location: ${res.city}, ${res.state}`))
+            io.to(user.room).emit('broadcast-message', generateLocationMessage(user.username, {city: res.city, state: res.state}))
             callback()
         })
     })
 
-    socket.on('join-room', ({ username, room }) => {
+    socket.on('join-room', ({ username, room }, callback) => {
+        const { error, user } = addUser({ id: socket.id, username, room })
+        if(error) return callback(error)
         socket.join(room)
-        socket.broadcast.to(room).emit('broadcast-message', generateMessage(`${username} has joined.`))
+        //console.log(getUsersInRoom(room))
+        socket.broadcast.to(room).emit('broadcast-message', generateMessage('BROADCAST',`${username} has joined.`))
     })
 
 })

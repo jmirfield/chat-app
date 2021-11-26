@@ -14,10 +14,10 @@ const messageTemplate = document.querySelector('#message-template').innerHTML
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
 
 socket.on('broadcast-message', (msg) => {
-    console.log(msg)
     const html = Mustache.render(messageTemplate, {
         message: msg.text,
-        createdAt: moment(msg.createdAt).format('hh:mm a')
+        createdAt: moment(msg.createdAt).format('hh:mm a'),
+        user: msg.username
     })
     //Checks for empty strings or strings with only whitespaces
     if (!/^\s*$/.test(msg.text)) $messages.insertAdjacentHTML('beforeend', html)
@@ -50,4 +50,9 @@ $locationButton.addEventListener('click', (e) => {
 
 })
 
-socket.emit('join-room', { username, room })
+socket.emit('join-room', { username, room }, (error) => {
+    if(error){
+        alert(error)
+        location.href = '/'
+    }
+})
