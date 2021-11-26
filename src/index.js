@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
     socket.on('join-room', ({ username, room }, callback) => {
         const { error, user } = addUser({ id: socket.id, username, room })
         if(error) return callback(error)
-        socket.join(room)
+        socket.join(user.room)
         //console.log(getUsersInRoom(room))
         socket.broadcast.to(room).emit('broadcast-message', generateMessage('BROADCAST',`${username} has joined.`))
     })
