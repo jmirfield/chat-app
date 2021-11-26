@@ -40,7 +40,7 @@ input {
 button {
     cursor: pointer;
     padding: 12px;
-    background: #7C5CBF;
+    background: #bf5c5c;
     border: none;
     color: white;
     font-size: 16px;
@@ -48,12 +48,12 @@ button {
 }
 
 button:hover {
-    background: #6b47b8;
+    background: #5c66bf;
 }
 
 button:disabled {
     cursor: default;
-    background: #7c5cbf94;
+    background: #bf5c5ca6;
 }
 
 /* Join Page Styles */
@@ -76,6 +76,7 @@ button:disabled {
 
 .centered-form button {
     width: 100%;
+    border-radius: 4px;
 }
 
 .centered-form input {
@@ -168,7 +169,8 @@ button:disabled {
     font-weight: 400;
     font-size: 22px;
     background: #2c2f3a;
-    padding: 24px;   
+    padding: 24px;
+    text-transform: capitalize; 
 }
 
 .list-title {
@@ -182,4 +184,8 @@ button:disabled {
     list-style-type: none;
     font-weight: 300;
     padding: 12px 24px 0 24px;
+}
+
+.users li {
+    margin-top: 10px;
 }

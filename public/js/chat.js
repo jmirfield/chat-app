@@ -6,12 +6,24 @@ const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
 const $locationButton = document.querySelector('#send-location')
 const $messages = document.querySelector('#messages')
+const $sidebar = document.querySelector('#sidebar')
 
 //Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
+const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 //Options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+
+const autoScroll = () => {
+    const $newMessage = $messages.lastElementChild
+    const marginHeight = parseInt(getComputedStyle($newMessage).marginBottom)
+    const newMessageHeight = $newMessage.offsetHeight + marginHeight
+    const visibleHeight = $messages.offsetHeight
+    const messageContainerHeight = $messages.scrollHeight
+    const currentScroll = $messages.scrollTop + visibleHeight
+    if(messageContainerHeight-newMessageHeight <= currentScroll)$messages.scrollTop = $messages.scrollHeight
+}
 
 socket.on('broadcast-message', (msg) => {
     const html = Mustache.render(messageTemplate, {
@@ -21,7 +33,16 @@ socket.on('broadcast-message', (msg) => {
     })
     //Checks for empty strings or strings with only whitespaces
     if (!/^\s*$/.test(msg.text)) $messages.insertAdjacentHTML('beforeend', html)
-    $messages.scrollTop = $messages.scrollHeight
+    //$messages.scrollTop = $messages.scrollHeight
+    autoScroll()
+})
+
+socket.on('roomUpdate', ({room, users}) => {
+    const html = Mustache.render(sidebarTemplate, {
+        room,
+        users
+    })
+    $sidebar.innerHTML = html
 })
 
 $messageForm.addEventListener('submit', (e) => {
@@ -50,9 +71,13 @@ $locationButton.addEventListener('click', (e) => {
 
 })
 
-socket.emit('join-room', { username, room }, (error) => {
-    if(error){
-        alert(error)
-        location.href = '/'
-    }
-})
+if(!username || !room){
+    location.href = '/'
+} else {
+    socket.emit('join-room', { username, room }, (error) => {
+        if(error){
+            alert(error)
+            location.href = '/'
+        }
+    })
+}

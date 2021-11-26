@@ -12,8 +12,6 @@ const port = process.env.PORT || 3000
 
 
 io.on('connection', (socket) => {
-    //socket.broadcast.emit('broadcast-message', generateMessage('A new user has joined.'))
-
     socket.on('send-message', (msg, callback) => {
         const user = getUser(socket.id)
         io.to(user.room).emit('broadcast-message', generateMessage(user.username, msg))
@@ -22,7 +20,13 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         const user = removeUser(socket.id)
-        if(user)io.to(user.room).emit('broadcast-message', generateMessage('BROADCAST', `${user.username} has left the chat.`))
+        if(user){
+            io.to(user.room).emit('broadcast-message', generateMessage('BROADCAST', `${user.username} has left the chat.`))
+            io.to(user.room).emit('roomUpdate', {
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            })
+        }
     })
 
     socket.on('send-location', (position, callback) => {
@@ -38,8 +42,12 @@ io.on('connection', (socket) => {
         const { error, user } = addUser({ id: socket.id, username, room })
         if(error) return callback(error)
         socket.join(user.room)
-        //console.log(getUsersInRoom(room))
         socket.broadcast.to(user.room).emit('broadcast-message', generateMessage('BROADCAST',`${username} has joined.`))
+        io.to(user.room).emit('roomUpdate', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        })
+        callback()
     })
 
 })
