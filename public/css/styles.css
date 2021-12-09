@@ -112,7 +112,7 @@ button:disabled {
     flex-grow: 1;
     padding: 24px 24px 0 24px;
     overflow-y: scroll;
-    max-width: 100vw;
+    word-wrap:break-word;
 }
 
 /* Message Styles */
