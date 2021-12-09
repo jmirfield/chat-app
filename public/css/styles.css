@@ -4,6 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 html {
@@ -94,7 +95,7 @@ button:disabled {
     height: 100vh;
     color: white;
     background: #333744;
-    width: 225px;
+    min-width: 225px;
     overflow-y: scroll
 }
 
@@ -111,6 +112,7 @@ button:disabled {
     flex-grow: 1;
     padding: 24px 24px 0 24px;
     overflow-y: scroll;
+    max-width: 100vw;
 }
 
 /* Message Styles */
