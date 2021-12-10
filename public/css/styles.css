@@ -202,7 +202,7 @@ button:disabled {
         background: #F7F7FA;
         padding: 24px;
         width: 75%;
-        height: 25%;
+        min-height: 25%;
         border-radius: 10px;
         overflow: hidden;
     }
@@ -228,7 +228,7 @@ button:disabled {
     }
 
     .chat-main {
-        height: 100vh;
+        height: 90vh;
 
     }
 
